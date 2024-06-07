@@ -1,0 +1,106 @@
+[
+    {
+        "name": "AddPro AB",
+        "location": "Malmö, Sweden",
+        "coordinates": {
+            "lat": 55.56932417158256,
+            "lon": 12.978824608476337
+        }
+    },
+    {
+        "name": "AddPro AB",
+        "location": "Helsingborg, Sweden",
+        "coordinates": {
+            "lat": 56.06505941224396,
+            "lon": 12.710787252753368
+        }
+    },
+    {
+        "name": "AddPro AB",
+        "location": "Kristianstad, Sweden",
+        "coordinates": {
+            "lat": 56.02442346560917,
+            "lon": 14.159191684075207
+        }
+    },
+    {
+        "name": "AddPro Denmark A/S",
+        "location": "Copenhagen, Denmark",
+        "coordinates": {
+            "lat": 55.71221262684569,
+            "lon": 12.42194985443754
+        }
+    },
+    {
+        "name": "Miracle 42 A/S",
+        "location": "Copenhagen, Denmark",
+        "coordinates": {
+            "lat": 55.71161860102009,
+            "lon": 12.422464793040216
+        }
+    },
+    {
+        "name": "JDM A/S",
+        "location": "Copenhagen, Denmark",
+        "coordinates": {
+            "lat": 55.71316588073367,
+            "lon": 12.423323099924263
+        }
+    },
+    {
+        "name": "itm8 Progressive A/S",
+        "location": "Copenhagen, Denmark",
+        "coordinates": {
+            "lat": 55.71287577045534,
+            "lon": 12.424009745431498
+        }
+    },
+    {
+        "name": "itm8 A/S",
+        "location": "Copenhagen, Denmark",
+        "coordinates": {
+            "lat": 55.71454945508345,
+            "lon": 12.575916838567974
+        }
+    },
+    {
+        "name": "itm8 A/S",
+        "location": "Copenhagen, Denmark",
+        "coordinates": {
+            "lat": 55.65817977468922,
+            "lon": 12.591142270307113
+        }
+    },
+    {
+        "name": "Cenvation",
+        "location": "Copenhagen, Denmark",
+        "coordinates": {
+            "lat": 55.68025287175434,
+            "lon": 12.581357571828978
+        }
+    },
+    {
+        "name": "Mentor IT",
+        "location": "Copenhagen, Denmark",
+        "coordinates": {
+            "lat": 55.71279295509146,
+            "lon": 12.421267008930302
+        }
+    },
+    {
+        "name": "itm8",
+        "location": "Aarhus, Denmark",
+        "coordinates": {
+            "lat": 56.12051569759014,
+            "lon": 10.156397490035474
+        }
+    },
+    {
+        "name": "itm8 A/S",
+        "location": "Herning, Denmark",
+        "coordinates": {
+            "lat": 56.162563326480985,
+            "lon": 8.982291297219206
+        }
+    }
+]
