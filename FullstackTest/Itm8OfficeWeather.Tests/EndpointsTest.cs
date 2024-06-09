@@ -11,6 +11,8 @@ public class EndpointsTest
     [Fact]
     public async Task ShouldReturnOkWhenSuccessful()
     {
+        // Arrange
+
         IEnumerable<Office> offices = [new Office("", "", new Services.GeoCoordinate(0, 0))];
 
         var officeDataReader = Substitute.For<IOfficeDataReader>();
@@ -22,7 +24,11 @@ public class EndpointsTest
         var smhiForecastsClient = Substitute.For<ISmhiForecastsClient>();
         smhiForecastsClient.GetForecastAsync(0, 0, default).ReturnsForAnyArgs(forecast);
 
+        // Act
+
         var result = await Endpoints.GetOfficeWeatherData(officeDataReader, smhiForecastsClient, default);
+
+        // Assert
 
         result.Result.ShouldBeOfType<Ok<IEnumerable<OfficeWeather>>>();
     }
@@ -30,6 +36,8 @@ public class EndpointsTest
     [Fact]
     public async Task ShouldReturnProblemHttpResultWhenOfficesFailed()
     {
+        // Arrange
+
         IEnumerable<Office> offices = [new Office("", "", new Services.GeoCoordinate(0, 0))];
 
         var officeDataReader = Substitute.For<IOfficeDataReader>();
@@ -37,7 +45,11 @@ public class EndpointsTest
 
         var smhiForecastsClient = Substitute.For<ISmhiForecastsClient>();
 
+        // Act
+
         var result = await Endpoints.GetOfficeWeatherData(officeDataReader, smhiForecastsClient, default);
+
+        // Assert
 
         result.Result.ShouldBeOfType<ProblemHttpResult>();
     }
@@ -45,6 +57,8 @@ public class EndpointsTest
     [Fact]
     public async Task ShouldReturnProblemHttpResultWhenForecastsFailed()
     {
+        // Arrange
+
         IEnumerable<Office> offices = [new Office("", "", new Services.GeoCoordinate(0, 0))];
 
         var officeDataReader = Substitute.For<IOfficeDataReader>();
@@ -53,7 +67,11 @@ public class EndpointsTest
         var smhiForecastsClient = Substitute.For<ISmhiForecastsClient>();
         smhiForecastsClient.GetForecastAsync(0, 0, default).Throws<Exception>();
 
+        // Act
+
         var result = await Endpoints.GetOfficeWeatherData(officeDataReader, smhiForecastsClient, default);
+
+        // Assert
 
         result.Result.ShouldBeOfType<ProblemHttpResult>();
     }
