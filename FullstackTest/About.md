@@ -58,18 +58,14 @@ Anrop till SMHI hanteras i serviceklassen ``SmhiForecastsClient``.
 ## Intressanta saker om lösningen
 
 * Använder API Endpoints (istället för API Controllers)
-* Använder ``IAsyncEnumerable`` när kontoren processas. 
 * Cachear response
 * Temperatursidan i UI är en interaktiv Blazor WebAssembly komponent som körs lokalt i webbläsaren.
+* Följer standarden med ``ProblemDetails``.
 
 ## Möjliga förbättringar
 
 * API:et skulle kunna ta parametrar som väljer ut temperatur för ett visst kontor och tid. Men det krävs omskrivning och vidare optimering.
 * Man skulle kunna cachea resultatet på servern också.
-* Requesten mot SMHI skulle kunna göras parallelt, med en ``Task.WhenAll``.
-* Man kan testa beteendet i endpointen med mockade tjänster.
-* Att WebAPI:er använder resultat-typer.
-* Se till att Web API validerar mer, samt följer standarder som ``ProblemDetails``.
 
 ## Tilltänkta användningsfall för framtiden
 
@@ -79,12 +75,8 @@ Man vill gå in och se prognosen för ett visst kontor. Kunna se en hel tidsseri
 
 ## Möjliga sätt att testa
 
-Nu är detta ett hyfsat enkelt program. Men om det vore mer komplext, med mer affärslogik, då skulle jag vilja verifiera beteendet. Och skriva automatiserade tester. För att undvika situationer där buggar introduceras.
-
-Man kan normalt testa endpointen, verifiera beteendet utifrån input och output. Samma för service-klasserna.
+Det finns tester som testar endpoints. För fallen där tjänsterna fallerar, för att inte kan ladda kontoren, eller hämta data från SMHI.
 
 Jag försöker att inte skriva tester för testernas skull. De ska vara meningsfulla.
-
-Även när en bugg upptäcks så ska där finnas ett test som verifierar fixen.
 
 Integrationstest mot SMHI för att se till att API-kontraktet gäller.
