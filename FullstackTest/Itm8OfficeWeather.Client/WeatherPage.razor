@@ -2,6 +2,7 @@
 @using Microsoft.FluentUI.AspNetCore.Components
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 @inject IOfficeWeatherClient OfficeWeatherClient
+@inject IToastService ToastService
 
 <PageTitle>Weather</PageTitle>
 
@@ -11,22 +12,22 @@
 
 @if (officeWeathers == null)
 {
-        <p><em>Loading...</em></p>
+    <p><em>Loading...</em></p>
 }
 else
 {
-        <!-- This page is rendered in SSR mode, so the FluentDataGrid component does not offer any interactivity (like sorting). -->
-        <FluentDataGrid Id="weathergrid" Items="@officeWeathers" TGridItem="OfficeWeather">
-            <PropertyColumn Title="Date" Property="@(c => c!.ValidTime.LocalDateTime.ToString("g"))" Align="Align.Start" Sortable="true" />
-            <PropertyColumn Title="Name" Property="@(c => c!.Name)" Sortable="true" />
-            <PropertyColumn Title="Location" Property="@(c => c!.Location)" Sortable="true" />
-            <PropertyColumn Title="Weather" Property="@(c => c!.WeatherSymbol)" Sortable="true" />
-            <PropertyColumn Title="Temp. (C)" Property="@(c => c!.TemperatureC + "°")" Sortable="true" />
-            <PropertyColumn Title="Precipitation" Property="@(c => c!.Precipitation.Category)" Sortable="true" />
-            <PropertyColumn Title="Precipitation (%)" Property="@(c => c!.Precipitation.Percent + "%")" Sortable="true" />
-            <PropertyColumn Title="Coordinates" Property="@(c => $"{c!.Coordinates.Lat}, {c!.Coordinates.Lon}")"
-                Align="Align.End" Sortable="true" />
-        </FluentDataGrid>
+    <!-- This page is rendered in SSR mode, so the FluentDataGrid component does not offer any interactivity (like sorting). -->
+    <FluentDataGrid Id="weathergrid" Items="@officeWeathers" TGridItem="OfficeWeather">
+        <PropertyColumn Title="Date" Property="@(c => c!.ValidTime.LocalDateTime.ToString("g"))" Align="Align.Start" Sortable="true" />
+        <PropertyColumn Title="Name" Property="@(c => c!.Name)" Sortable="true" />
+        <PropertyColumn Title="Location" Property="@(c => c!.Location)" Sortable="true" />
+        <PropertyColumn Title="Weather" Property="@(c => c!.WeatherSymbol)" Sortable="true" />
+        <PropertyColumn Title="Temp. (C)" Property="@(c => c!.TemperatureC + "°")" Sortable="true" />
+        <PropertyColumn Title="Precipitation" Property="@(c => c!.Precipitation.Category)" Sortable="true" />
+        <PropertyColumn Title="Precipitation (%)" Property="@(c => c!.Precipitation.Percent + "%")" Sortable="true" />
+        <PropertyColumn Title="Coordinates" Property="@(c => $"{c!.Coordinates.Lat}, {c!.Coordinates.Lon}")"
+            Align="Align.End" Sortable="true" />
+    </FluentDataGrid>
 }
 
 @code
@@ -35,6 +36,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        officeWeathers = (await OfficeWeatherClient.GetWeatherDataAsync()).AsQueryable();
+        try 
+        {
+            officeWeathers = (await OfficeWeatherClient.GetWeatherDataAsync()).AsQueryable();
+        }
+        catch(ApiException<ProblemDetails> exc) 
+        {
+            ToastService.ShowError(exc.Result.Detail);
+        }
     }
 }

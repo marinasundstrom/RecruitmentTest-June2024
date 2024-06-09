@@ -6,13 +6,15 @@ namespace Itm8OfficeWeather.Services;
 
 public interface IOfficeDataReader
 {
-    IAsyncEnumerable<Office> GetOfficesAsync(CancellationToken cancellationToken = default);
+    Task<IEnumerable<Office>> GetOfficesAsync(CancellationToken cancellationToken = default);
 }
 
 public sealed class OfficeDataReader : IOfficeDataReader
 {
-    public async IAsyncEnumerable<Office> GetOfficesAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Office>> GetOfficesAsync(CancellationToken cancellationToken = default)
     {
+        List<Office> offices = new List<Office>();
+
         using var fileStream = File.OpenRead("./itm8-offices.json");
         var officeLocationJson = await JsonDocument.ParseAsync(fileStream, default, cancellationToken);
 
@@ -25,8 +27,10 @@ public sealed class OfficeDataReader : IOfficeDataReader
             double lat = coordinates.GetProperty("lat").GetDouble()!;
             double lon = coordinates.GetProperty("lon").GetDouble()!;
 
-            yield return new Office(name, location, new GeoCoordinate(lat, lon));
+            offices.Add(new Office(name, location, new GeoCoordinate(lat, lon)));
         }
+
+        return offices;
     }
 }
 

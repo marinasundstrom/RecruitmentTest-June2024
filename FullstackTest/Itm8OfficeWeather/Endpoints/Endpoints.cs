@@ -1,6 +1,11 @@
+
+using static Microsoft.AspNetCore.Http.TypedResults;
+
 using System.Runtime.CompilerServices;
-using System.Text.Json;
+
 using Itm8OfficeWeather.Services;
+
+using Microsoft.AspNetCore.Http.HttpResults;
 
 public static class Endpoints
 {
@@ -9,23 +14,44 @@ public static class Endpoints
         app.MapGet("/api/weather/offices", GetOfficeWeatherData)
            .CacheOutput()
            .WithName("OfficeWeather_GetWeatherData")
-           .WithTags("OfficeWeather");
+           .WithTags("OfficeWeather")
+           .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         return app;
     }
 
-    public static async IAsyncEnumerable<OfficeWeather> GetOfficeWeatherData(IOfficeDataReader officeDataReader, ISmhiForecastsClient forecastsClient, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public static async Task<Results<Ok<IEnumerable<OfficeWeather>>, ProblemHttpResult>> GetOfficeWeatherData(IOfficeDataReader officeDataReader, ISmhiForecastsClient forecastsClient, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var offices = officeDataReader.GetOfficesAsync(cancellationToken);
+        IEnumerable<Office> offices;
 
-        await foreach (var office in offices)
+        try
         {
-            var foreacast = await forecastsClient.GetForecastAsync(office.Coordinate.Lat, office.Coordinate.Lon, cancellationToken);
-
-            var item = foreacast.TimeSeries.First();
-
-            yield return new OfficeWeather(office.Name, office.Location, new GeoCoordinate(office.Coordinate.Lat, office.Coordinate.Lon), item.Temperature, new Precipitation(item.Precipitation.Category, item.Precipitation.Percent), item.WeatherSymbol, item.ValidTime);
+            offices = await officeDataReader.GetOfficesAsync(cancellationToken);
         }
+        catch (Exception exc)
+        {
+            return Problem(title: "Failed to load offices", detail: exc.Message, statusCode: StatusCodes.Status500InternalServerError);
+        }
+
+        List<OfficeWeather> forecasts = new List<OfficeWeather>();
+
+        foreach (var office in offices)
+        {
+            try
+            {
+                var foreacast = await forecastsClient.GetForecastAsync(office.Coordinate.Lat, office.Coordinate.Lon, cancellationToken);
+
+                var item = foreacast.TimeSeries.First();
+
+                forecasts.Add(new OfficeWeather(office.Name, office.Location, new GeoCoordinate(office.Coordinate.Lat, office.Coordinate.Lon), item.Temperature, new Precipitation(item.Precipitation.Category, item.Precipitation.Percent), item.WeatherSymbol, item.ValidTime));
+            }
+            catch (Exception exc)
+            {
+                return Problem(title: "Failed to retrieve forecast", detail: exc.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        return Ok(forecasts.AsEnumerable());
     }
 }
 
