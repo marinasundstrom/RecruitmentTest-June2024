@@ -55,6 +55,12 @@ Inläsning av kontor hanteras i  serviceklassen ``OfficeDataReader``.
 
 Anrop till SMHI hanteras i serviceklassen ``SmhiForecastsClient``. 
 
+Jag valde först att hämta ut väderdatan sekventiellt i en foreach loop där jag väntade på varje anrop. Sedan gick jag över till att göra på separata trådar som väntas av ``Task.WhenAll``. Detta för att korta ner tiden för requestet iom alla anrop.
+
+Jag använde också ``IAsyncEnumerable`` men jag byggde bort det för att det inte skulle funka med endpoints som returnerar olika statuskoder. Kändes fel att ha det i denna lösning iom att jag inte behöver strömma data.
+
+Detta kan ses i historiken i Git.
+
 ## Intressanta saker om lösningen
 
 * Använder API Endpoints (istället för API Controllers)
